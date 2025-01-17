@@ -27,4 +27,9 @@ receive and execute remote control commands.
        Providers: Manage app state with RiverPod.
        Screens: Handle UI logic for different views.
        Widgets: Custom components for reusable UI elements.
+
+
+6. Utils
+       
+       Contains helper functions
     

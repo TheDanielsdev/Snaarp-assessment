@@ -15,7 +15,7 @@ class CommandHistoryWidget extends StatelessWidget {
             shrinkWrap: true,
             itemCount: lastCommand?.length ?? 0,
             itemBuilder: (_, i) {
-              return Text(lastCommand?[i] ?? '');
+              return Text(lastCommand?[i] ?? 'No commands yet');
             })
       ],
     );
