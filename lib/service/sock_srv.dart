@@ -6,9 +6,9 @@ import 'package:snaarp/providers/app_state.dart';
 import 'package:snaarp/providers/device_prov.dart';
 import 'package:snaarp/providers/location_prov.dart';
 import 'package:snaarp/screens/login.dart';
+import 'package:snaarp/utils/utils.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
-final container = ProviderContainer();
 final navigatorKey = container.read(navigatorKeyProvider);
 final websocketProvider =
     StateNotifierProvider<WebSocketStateNotifier, WebSocketState>((ref) {
@@ -21,6 +21,8 @@ class WebSocketStateNotifier extends StateNotifier<WebSocketState> {
   }
 
   late Socket _socket;
+
+  List listOfCmds = [];
 
   void connect() {
     _socket = io('http://test-websocket.snaarp.com:3100', <String, dynamic>{
@@ -43,26 +45,32 @@ class WebSocketStateNotifier extends StateNotifier<WebSocketState> {
         MaterialPageRoute(builder: (context) => const LoginScreen()),
         (route) => false,
       );
-      state = state.copyWith(lastCommand: 'logout');
+      listOfCmds.add('logout');
+      state = state.copyWith(lastCommand: listOfCmds);
     });
     _socket.on('shutdown', (_) {
-      _simulateShutdown();
-      state = state.copyWith(lastCommand: 'shutdown');
+      simulateShutdown();
+      listOfCmds.add('shutdown');
+      state = state.copyWith(lastCommand: listOfCmds);
     });
     _socket.on('startLocation', (_) {
       container.read(locationProvider.notifier).startTracking();
-      state = state.copyWith(lastCommand: 'startLocation');
+      listOfCmds.add('startLocation');
+      state = state.copyWith(lastCommand: listOfCmds);
     });
     _socket.on('stopLocation', (_) {
       container.read(locationProvider.notifier).stopTracking();
-      state = state.copyWith(lastCommand: 'stopLocation');
+      listOfCmds.add('stopLocation');
+      state = state.copyWith(lastCommand: listOfCmds);
     });
     _socket.on('getStats', (_) {
       container.read(deviceProvider.notifier).updateStats();
-      state = state.copyWith(lastCommand: 'getStats');
+      listOfCmds.add('getStats');
+      state = state.copyWith(lastCommand: listOfCmds);
     });
     _socket.on('config', (data) {
-      state = state.copyWith(configData: data, lastCommand: 'config');
+      state = state.copyWith(configData: data, lastCommand: listOfCmds);
+      configureApp(data);
     });
   }
 
@@ -73,7 +81,7 @@ class WebSocketStateNotifier extends StateNotifier<WebSocketState> {
 
 class WebSocketState {
   final bool isConnected;
-  final String? lastCommand;
+  final List? lastCommand;
   final Map<String, dynamic>? configData;
 
   WebSocketState({
@@ -86,7 +94,7 @@ class WebSocketState {
 
   WebSocketState copyWith({
     bool? isConnected,
-    String? lastCommand,
+    List? lastCommand,
     Map<String, dynamic>? configData,
   }) {
     return WebSocketState(
@@ -95,24 +103,4 @@ class WebSocketState {
       configData: configData ?? this.configData,
     );
   }
-}
-
-void _simulateShutdown() {
-  showDialog(
-    context: container.read(navigatorKeyProvider).currentContext!,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text("Device Shutdown"),
-        content: const Text("Simulating device shutdown..."),
-        actions: <Widget>[
-          TextButton(
-            child: const Text("OK"),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
 }

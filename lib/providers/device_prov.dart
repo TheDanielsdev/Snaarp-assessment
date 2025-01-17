@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:snaarp/utils/utils.dart';
 
 final deviceProvider =
     StateNotifierProvider<DeviceNotifier, DeviceState>((ref) {
@@ -84,17 +85,5 @@ class DeviceState {
       model: model ?? this.model,
       platformVersion: platformVersion ?? this.platformVersion,
     );
-  }
-}
-
-Future<void> getBatteryLevel() async {
-  const platform = MethodChannel('com.example.battery/battery_level');
-
-  try {
-    final int result = await platform.invokeMethod('getBatteryLevel');
-    container.read(batteryLevelProv.notifier).state = "$result";
-  } on PlatformException catch (e) {
-    container.read(batteryLevelProv.notifier).state =
-        "Failed to get battery level: '${e.message}'.";
   }
 }

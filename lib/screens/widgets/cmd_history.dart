@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CommandHistoryWidget extends StatelessWidget {
-  final String? lastCommand;
+  final List? lastCommand;
 
   const CommandHistoryWidget({super.key, this.lastCommand});
 
@@ -11,7 +11,12 @@ class CommandHistoryWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text('Command Received:'),
-        Text(lastCommand ?? 'None'),
+        ListView.builder(
+            shrinkWrap: true,
+            itemCount: lastCommand?.length ?? 0,
+            itemBuilder: (_, i) {
+              return Text(lastCommand?[i] ?? '');
+            })
       ],
     );
   }

@@ -6,6 +6,11 @@ final navigatorKeyProvider = Provider<GlobalKey<ScaffoldMessengerState>>((ref) {
   return GlobalKey<ScaffoldMessengerState>();
 });
 
+final configProvider = StateProvider<Map<String, bool>>((ref) => {
+      'notifications': false,
+      'backgroundProcess': false,
+    });
+
 // final socketProvider = Provider<SocketService>((ref) {
 //   return SocketService();
 // });
