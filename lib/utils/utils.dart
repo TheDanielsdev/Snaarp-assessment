@@ -40,6 +40,7 @@ Future<void> getBatteryLevel() async {
 }
 
 void configureApp(String message) {
+  //Simulating form in which commands can come in
   if (message.startsWith("config:")) {
     List<String> parts = message.split(":");
     if (parts.length > 1) {
