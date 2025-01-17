@@ -1,16 +1,30 @@
 # snaarp
 
-A new Flutter project.
+A feature-rich mobile client application that connects to an existing WebSocket server to
+receive and execute remote control commands.
 
-## Getting Started
+## Setup
+1. Clone the repository:
+   
+       git clone <https://github.com/TheDanielsdev/Snaarp-assessment/tree/master>
+       cd snaarp
 
-This project is a starting point for a Flutter application.
+2. flutter pub get
+3. Run the app:
 
-A few resources to get you started if this is your first Flutter project:
+       flutter run
+4. Features
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+       Connection Status: Shows whether the app is connected to the WebSocket server.
+       User Logout: Allows remote logout of the user.
+       Simulate Shutdown: Simulates a device shutdown when commanded.
+       Geo-location Tracking: Real-time location tracking that can be toggled on/off from the server.
+       Device Statistics: Displays and can update device statistics like battery level and storage usage.
+       Remote Configuration: App settings can be configured remotely.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+5. Code Structure
+
+       Providers: Manage app state with RiverPod.
+       Screens: Handle UI logic for different views.
+       Widgets: Custom components for reusable UI elements.
+    
