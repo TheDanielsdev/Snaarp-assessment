@@ -1,21 +1,29 @@
+// ignore_for_file: deprecated_member_use
+
+import 'dart:nativewrappers/_internal/vm/lib/mirrors_patch.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:snaarp/providers/app_state.dart';
 import 'package:snaarp/providers/device_prov.dart';
 import 'package:snaarp/providers/location_prov.dart';
+import 'package:snaarp/screens/login.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
+final container = ProviderContainer();
+final navigatorKey = container.read(navigatorKeyProvider);
 final websocketProvider =
     StateNotifierProvider<WebSocketStateNotifier, WebSocketState>((ref) {
-  return WebSocketStateNotifier();
+  return WebSocketStateNotifier(ref as ProviderRef);
 });
-final container = ProviderContainer();
 
 class WebSocketStateNotifier extends StateNotifier<WebSocketState> {
-  WebSocketStateNotifier() : super(WebSocketState.initial()) {
+  WebSocketStateNotifier(this.ref) : super(WebSocketState.initial()) {
     connect();
   }
 
   late Socket _socket;
+  ProviderRef ref;
 
   void connect() {
     _socket = io('http://test-websocket.snaarp.com:3100', <String, dynamic>{
@@ -33,10 +41,15 @@ class WebSocketStateNotifier extends StateNotifier<WebSocketState> {
     });
 
     _socket.on('logout', (_) {
+      Navigator.pushAndRemoveUntil(
+        ref.watch(navigatorKeyProvider).currentContext!,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        (route) => false,
+      );
       state = state.copyWith(lastCommand: 'logout');
     });
     _socket.on('shutdown', (_) {
-      // Handle shutdown command
+      _simulateShutdown(ref);
       state = state.copyWith(lastCommand: 'shutdown');
     });
     _socket.on('startLocation', (_) {
@@ -85,4 +98,24 @@ class WebSocketState {
       configData: configData ?? this.configData,
     );
   }
+}
+
+void _simulateShutdown(ProviderRef rf) {
+  showDialog(
+    context: rf.watch(navigatorKeyProvider).currentContext!,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text("Device Shutdown"),
+        content: const Text("Simulating device shutdown..."),
+        actions: <Widget>[
+          TextButton(
+            child: const Text("OK"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
 }

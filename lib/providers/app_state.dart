@@ -1,5 +1,10 @@
-// import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:snaarp/service/sock_srv.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:snaarp/service/sock_srv.dart';
+
+final navigatorKeyProvider = Provider<GlobalKey<ScaffoldMessengerState>>((ref) {
+  return GlobalKey<ScaffoldMessengerState>();
+});
 
 // final socketProvider = Provider<SocketService>((ref) {
 //   return SocketService();
